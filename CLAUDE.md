@@ -30,6 +30,11 @@ npm run preview    # ビルド結果の確認（Service Worker を含む PWA の
 npm run icons      # assets/icons/*.svg から public/icons/ の PNG を作り直す（rsvg-convert が必要）
 ```
 
+## 公開
+
+- GitHub Pages: https://mab-comil.github.io/myRpnCalc/ （リポジトリ mab-comil/myRpnCalc、Public）
+- `main` に push すると `.github/workflows/deploy.yml` がテスト・型チェック・ビルドを行い、公開する。push は公開と同じ意味になるので注意
+
 ## 注意
 
 - ドキュメントとコメントは日本語で書く
