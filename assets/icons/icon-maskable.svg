@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- マスカブル版: 背景を全面に塗り、図案を中央の安全領域（直径80%の円）に収める -->
+  <rect width="512" height="512" fill="#2f6fd6"/>
+  <g transform="translate(256 256) scale(0.78) translate(-256 -256)">
+    <rect x="88" y="104" width="336" height="304" rx="36" fill="#ffffff"/>
+    <rect x="248" y="148" width="132" height="26" rx="13" fill="#b9cbea"/>
+    <rect x="200" y="196" width="180" height="26" rx="13" fill="#b9cbea"/>
+    <rect x="284" y="244" width="96" height="26" rx="13" fill="#b9cbea"/>
+    <rect x="132" y="304" width="248" height="60" rx="18" fill="#2f6fd6"/>
+  </g>
+</svg>
