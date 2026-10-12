@@ -123,11 +123,15 @@ function input(state: CalcState, key: Digit | '00' | '.'): CalcState {
 // ---- C・⌫・＋/−・Enter ----------------------------------------------------------
 
 function clear(state: CalcState): CalcState {
-  if (state.x.kind !== 'empty' || state.x.negative) return { ...state, x: EMPTY }
-  // 全消去（AC）。履歴が空のときや、直前がすでに区切り線のときは区切り線を重ねない
-  const last = state.history.at(-1)
-  const history =
-    last === undefined || last.type === 'separator' ? state.history : addHistory(state.history, { type: 'separator' })
+  const { x } = state
+  // 確定値（演算結果など）は、消す直前の状態を履歴に残してから消す
+  if (x.kind === 'value') return { ...state, x: EMPTY, history: addHistory(state.history, opLine(state, 'C')) }
+  if (x.kind === 'input' || x.negative) return { ...state, x: EMPTY }
+  // 全消去（AC）。スタックに値があれば消す直前の状態を履歴に残す。
+  // 履歴が空のときや、直前がすでに区切り線のときは区切り線を重ねない
+  let history = state.stack.length > 0 ? addHistory(state.history, opLine(state, 'AC')) : state.history
+  const last = history.at(-1)
+  if (last !== undefined && last.type !== 'separator') history = addHistory(history, { type: 'separator' })
   return { x: EMPTY, stack: [], history }
 }
 

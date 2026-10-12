@@ -119,7 +119,7 @@ describe('設計仕様書 9章のテスト観点', () => {
     const twice = run('clear', DEFAULT_SETTINGS, once.state)
     expect(twice.state.x).toEqual(empty())
     expect(twice.state.stack).toEqual([])
-    expect(twice.state.history.at(-1)).toEqual({ type: 'separator' })
+    expect(twice.state.history.map((l) => l.label ?? l.type)).toEqual(['＋', 'AC', 'separator'])
   })
 
   it('#15 5 +（スタック1が空）→ エラー。状態は変わらない', () => {
@@ -196,10 +196,39 @@ describe('C', () => {
     expect(r.state.stack).toEqual(['3'])
   })
 
+  it('確定値を消すときは、消す直前の状態を C の行として履歴に残す', () => {
+    const r = run('1 enter 2 add 9 enter 3 mul clear')
+    expect(r.state.history.at(-1)).toEqual({
+      type: 'op',
+      cells: [null, null, '3', '27'],
+      overflow: false,
+      label: 'C',
+    })
+  })
+
+  it('入力中の値・負号だけを消すときは履歴に残さない', () => {
+    expect(run('1 enter 2 add 7 clear').state.history.map((l) => l.label)).toEqual(['＋'])
+    expect(run('1 enter 2 add enter negate clear').state.history.map((l) => l.label)).toEqual(['＋'])
+  })
+
+  it('全消去でスタックに値があれば、消す直前の状態を AC の行として残してから区切り線を引く', () => {
+    const r = run('100 enter 200 add enter clear')
+    expect(r.state.stack).toEqual([])
+    expect(r.state.history.slice(-2)).toEqual([
+      { type: 'op', cells: [null, null, '300', null], overflow: false, label: 'AC' },
+      { type: 'separator' },
+    ])
+  })
+
+  it('履歴が空でも、スタックに値があれば全消去で AC の行と区切り線を残す', () => {
+    const r = run('5 enter clear')
+    expect(r.state.history.map((l) => l.label ?? l.type)).toEqual(['AC', 'separator'])
+  })
+
   it('履歴が空のとき・直前が区切り線のときは区切り線を重ねない', () => {
     expect(run('clear').state.history).toEqual([])
     const r = run('1 enter 2 add clear clear clear clear')
-    expect(r.state.history.map((l) => l.type)).toEqual(['op', 'separator'])
+    expect(r.state.history.map((l) => l.label ?? l.type)).toEqual(['＋', 'C', 'separator'])
   })
 })
 
